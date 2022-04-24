@@ -11,14 +11,24 @@ class TextAnalyser:
                 if matched is not None:
                     reports.append({
                         'type': 'گزارش',
-                        'marker': matched,
-                        'span': [x + 1 for x in matched[0].span()]
+                        'marker': matched.group(1),
+                        'span': [x + 1 for x in matched.span()]
                     })
 
         return reports
 
     def __find_events(self, text):
         # a = ["ضرر", "سود", "اطلاعیه", "حقیق", "حقوق", "افزایش", "سرمایه", "تقسیم", "سود", "دامنه", "نوسان", "شدید", "سهم", "رانت"]
+        numbers = {
+            'یک': '1', 'دو': '2', 'سه': '3', 'چهار': '4', 'پنج': '5', 'شش': '6', 'هفت': '7', 'هشت': '8', 'نه': '9',
+            'ده': '10',
+            'یازده': '11', 'دوازده': '12', 'سیزده': '13', 'چهارده': '14', 'پانزده': '15', 'شانزده': '16', 'هفده': '17',
+            'هجده': '18', 'نوزده': '19',
+            'بیست': '20', 'سی': '30', 'چهل': '40', 'پنجاه': '50', 'شصت': '60', 'هفتاد': '70', 'هشتاد': '80',
+            'نود': '90',
+            'صد': '100', 'دویست': '200', 'سیصد': '300', 'پانصد': '500', 'چهارصد': '400', 'ششصد': '600', 'هفتصد': '700',
+            'هشتصد': '800', 'نهصد': '900', 'یکصد': '100'
+        }
 
         patterns = [r"\b((افشا|افشای) (الف|ب))\b",  # افشای الف
                     r"\b(((\S+) ){1,2}(تومان|تومن|درصد|واحد|ریال) ((\S+) ){0,2}(مثبت|منفی|رشد|سود|افزایش|کاهش))\b",
@@ -40,21 +50,29 @@ class TextAnalyser:
                 if matched is not None:
                     events.append({
                         'type': 'واقعه',
-                        'marker': str(matched),
-                        'span': [x + 1 for x in matched[0].span()]
+                        'marker': str(matched.group(1)),
+                        'span': [x + 1 for x in matched.span()]
                     })
         return events
 
     def __find_symbols(self, text):
         def find_name(text):
             for name in symbols_data['name']:
+                if name == 'دی ':
+                    if text.startswith('دی ') or len(re.findall(' دی ', text)) != 0:
+                        symbols.append({
+                            'type': 'نماد',
+                            'marker': 'دی',
+                            'span': ''
+                        })
+                    continue
                 matched = re.findall(name, text)
                 if len(matched) != 0:
                     for name_symbol in matched:
                         symbols.append({
                             'type': 'نماد',
                             'marker': name_symbol,
-                            'span': [int(text.index(matched)), int(text.index(matched)) + len(matched)]
+                            'span': ''
                         })
 
         def find_title(text):
@@ -64,20 +82,20 @@ class TextAnalyser:
                     symbols.append({
                         'type': 'شرکت',
                         'marker': matched,
-                        'span': [int(text.index(matched)), int(text.index(matched))+len(matched)]
+                        'span': ''
                     })
 
         symbols = []
         symbols_data = {
-            'name': {'وتجارت', 'وپارس','فملی', 'وبصادر','کترام', 'فاذر', 'شراز', 'چکاپا', 'آپ', 'لابسا', 'کاما', 'پکویر', 'ثبهساز', 'کلر', 'پترول',
+            'name': {'وتجارت', 'وپارس', 'فملی', 'وبصادر', 'کترام', 'فاذر', 'شراز', 'چکاپا', 'آپ', 'لابسا', 'کاما',
+                     'پکویر', 'ثبهساز', 'کلر', 'پترول',
                      'ورنا', 'لکما', 'بترانس', 'کسرا', 'خفنر', 'ذوب', 'خدیزل', 'شستا', 'شاراک', 'فولاد', 'شپترو',
                      'وشهر',
                      'قاسم', 'پالایش', 'خساپا', 'پاسا', 'فسبزوار', 'وبرق', 'غزر', 'سفار', 'نوری', 'زگلدشت', 'ولساپا',
                      'وغدیر', 'سپید', 'وآیند', 'بکاب', 'وسالت', 'کیسون', 'تپکو', 'بجهرم', 'فروی', 'ختراک', 'همراه',
                      'غبشهر',
-                     'غنوش', 'کیمیاتک', 'فلوله', 'تفارس-پذیره', 'آرام', 'خفولا', 'بالاس', 'غدشت', 'ثشاهد', 'شاخص بورس',
+                     'غنوش', 'کیمیاتک', 'فلوله', 'تفارس-پذیره', 'آرام', 'خفولا', 'بالاس', 'غدشت', 'ثشاهد',
                      'کتوکا', 'کفپارس', 'زماهان', 'شفن', 'دی ', 'خپارس', 'غصینو', 'مادیرا', 'زاگرس', 'قچار', 'کرمان',
-                     'بورس',
                      'شکلر', 'شپلی', 'خکرمان', 'کدما', 'طلا', 'خنصیر', 'وهامونح', 'شلرد', 'برکت', 'کمند', 'وسین',
                      'سجام',
                      'مفاخر', 'شوینده', 'خکار', 'شیشه01ن', 'افق', 'شپدیس', 'خاور', 'تمحرکه', 'کالا', 'صبا', 'سیمرغ',
@@ -128,7 +146,7 @@ class TextAnalyser:
         find_title(text)
         return symbols
 
-    def run(self, input:str = None):
+    def run(self, input: str = None):
         if input is None:
             with open('input_example', encoding="utf8") as f:
                 texts = f.readlines()
@@ -142,11 +160,7 @@ class TextAnalyser:
             events = self.__find_events(text)
             reports = self.__find_reports(text)
 
-
-
-
-
-            #todo: for test
+            # todo: for test
             if len(events) != 0:
                 pass
             pass
@@ -158,8 +172,7 @@ class TextAnalyser:
             for item in reports:
                 result.append(item)
             print(result)
-            print("="*100)
-
+            print("=" * 100)
 
 
 if __name__ == '__main__':
