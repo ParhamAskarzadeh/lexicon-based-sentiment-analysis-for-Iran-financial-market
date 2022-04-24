@@ -11,8 +11,8 @@ class TextAnalyser:
                 if matched is not None:
                     reports.append({
                         'type': 'گزارش',
-                        'marker': matched,
-                        'span': [x + 1 for x in matched[0].span()]
+                        'marker': matched.group(1),
+                        'span': [x + 1 for x in matched.span()]
                     })
 
         return reports
@@ -40,8 +40,8 @@ class TextAnalyser:
                 if matched is not None:
                     events.append({
                         'type': 'واقعه',
-                        'marker': str(matched),
-                        'span': [x + 1 for x in matched[0].span()]
+                        'marker': str(matched.group(1)),
+                        'span': [x + 1 for x in matched.span()]
                     })
         return events
 
