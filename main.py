@@ -1,3 +1,6 @@
+import re
+
+
 saham = {'name': {'کترام', 'ودی', 'فاذر', 'شراز', 'چکاپا', 'آپ', 'لابسا', 'کاما', 'پکویر', 'ثبهساز', 'کلر', 'پترول',
                  'ورنا', 'لکما', 'بترانس', 'کسرا', 'خفنر', 'ذوب', 'خدیزل', 'شستا', 'شاراک', 'فولاد', 'شپترو', 'وشهر',
                  'قاسم', 'پالایش', 'خساپا', 'پاسا', 'فسبزوار', 'وبرق', 'غزر', 'سفار', 'نوری', 'زگلدشت', 'ولساپا',
@@ -48,9 +51,38 @@ saham = {'name': {'کترام', 'ودی', 'فاذر', 'شراز', 'چکاپا', 
 
 a = ["ضرر", "سود", "اطلاعیه", "حقیق", "حقوق", "افزایش", "سرمایه", "تقسیم", "سود", "دامنه", "نوسان", "شدید", "سهم", "رانت"]
 
-class bourse:
-    def __init__(self):
-        #
-        #
-        #
-        pass
+def run(txt):
+    javab = []
+
+    for i in saham['name']:
+        mydict = {}
+        x=re.search(i, txt)
+        if x != None:
+            mydict['type'] = "نماد"
+            mydict['marker'] = i
+            mydict['span'] = re.findall("\([0-9]+,\s[0-9]+\)", str(x))[0]
+            javab.append(mydict)
+
+    for i in saham['title']:
+        mydict = {}
+        x = re.search(i, txt)
+        if x != None:
+            mydict['type'] = "شرکت"
+            mydict['marker'] = i
+            mydict['span'] = re.findall("\([0-9]+,\s[0-9]+\)", str(x))[0]
+
+    for i in a:
+        mydict = {}
+        x = re.search(i, txt)
+        if x != None:
+            mydict['type'] = "واقعه"
+            mydict['marker'] = i
+            mydict['span'] = re.findall("\([0-9]+,\s[0-9]+\)", str(x))[0]
+
+    print(javab)
+
+
+run("text")
+
+if __name__ == '__main__':
+    print('hell')
