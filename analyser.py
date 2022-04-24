@@ -83,7 +83,7 @@ class TextAnalyser:
                     symbols.append({
                         'type': 'شرکت',
                         'marker': matched,
-                        'span': [int(text.index(matched)), int(text.index(matched))+len(matched)]
+                        'span': ''
                     })
 
 
