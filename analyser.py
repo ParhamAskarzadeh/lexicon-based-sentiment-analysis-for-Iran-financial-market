@@ -63,7 +63,7 @@ class TextAnalyser:
                         symbols.append({
                             'type': 'نماد',
                             'marker': 'دی',
-                            'span': ''
+                            'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search('دی ', text)))[0]
                         })
                     continue
                 matched = re.findall(name, text)
@@ -72,7 +72,7 @@ class TextAnalyser:
                         symbols.append({
                             'type': 'نماد',
                             'marker': name_symbol,
-                            'span': ''
+                            'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search(name, text)))[0]
                         })
 
         def find_title(text):
@@ -82,7 +82,7 @@ class TextAnalyser:
                     symbols.append({
                         'type': 'شرکت',
                         'marker': matched,
-                        'span': ''
+                        'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search(title, text)))[0]
                     })
 
         symbols = []
