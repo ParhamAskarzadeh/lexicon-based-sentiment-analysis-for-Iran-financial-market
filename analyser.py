@@ -67,9 +67,9 @@ class TextAnalyser:
                             'span': ''
                         })
                     continue
-                mached = re.findall(name, text)
-                if len(mached) != 0:
-                    for name_symbol in mached:
+                matched = re.findall(name, text)
+                if len(matched) != 0:
+                    for name_symbol in matched:
                         symbols.append({
                             'type': 'نماد',
                             'marker': name_symbol,
@@ -78,13 +78,14 @@ class TextAnalyser:
 
         def find_title(text):
             for title in symbols_data['title']:
-                mached = re.search(title, text)
-                if mached is not None:
+                matched = re.search(title, text)
+                if matched is not None:
                     symbols.append({
                         'type': 'شرکت',
-                        'marker': mached,
-                        'span': ''
+                        'marker': matched,
+                        'span': [int(text.index(matched)), int(text.index(matched))+len(matched)]
                     })
+
 
         symbols = []
         symbols_data = {
