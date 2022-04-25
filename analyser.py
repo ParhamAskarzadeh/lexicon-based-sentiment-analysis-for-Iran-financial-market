@@ -76,29 +76,32 @@ class TextAnalyser:
             for name in symbols_data['name']:
                 if name == 'دی ':
                     if text.startswith('دی ') or len(re.findall(' دی ', text)) != 0:
+                        find_span=re.findall('[0-9]\d*', str(re.search('دی ', text)))
                         symbols.append({
                             'type': 'نماد',
                             'marker': 'دی',
-                            'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search('دی ', text)))[0]
+                            'span': [int(find_span[0]),int(find_span[1])]
                         })
                     continue
                 matched = re.findall(name, text)
                 if len(matched) != 0:
                     for name_symbol in matched:
+                        find_span=re.findall('[0-9]\d*', str(re.search(name, text)))
                         symbols.append({
                             'type': 'نماد',
                             'marker': name_symbol,
-                            'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search(name, text)))[0]
+                            'span': [int(find_span[0]),int(find_span[1])]
                         })
 
         def find_title(text):
             for title in symbols_data['title']:
                 matched = re.search(title, text)
                 if matched is not None:
+                    find_span = re.findall('[0-9]\d*', str(re.search(title, text)))
                     symbols.append({
                         'type': 'شرکت',
                         'marker': matched,
-                        'span': re.findall('span\([0-9].*, [0-9].*\)', str(re.search(title, text)))[0]
+                        'span': [int(find_span[0]),int(find_span[1])]
                     })
 
         symbols = []
