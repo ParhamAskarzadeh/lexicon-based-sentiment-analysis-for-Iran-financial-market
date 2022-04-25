@@ -166,20 +166,23 @@ class TextAnalyser:
         if input is None:
             with open('input_example', encoding="utf8") as f:
                 texts = f.readlines()
+                for text in texts:
+                    text = text.replace("\u200C", " ")
+                    symbols = self.__find_symbols(text)
+                    events = self.__find_events(text)
+                    reports = self.__find_reports(text)
+                    result = []
+                    for item in symbols:
+                        result.append(item)
+                    for item in events:
+                        result.append(item)
+                    for item in reports:
+                        result.append(item)
+                    print(result)
         else:
-            texts = []
-            texts.append(input)
-
-        for text in texts:
-            text = text.replace("\u200C", " ")
-            symbols = self.__find_symbols(text)
-            events = self.__find_events(text)
-            reports = self.__find_reports(text)
-
-            # todo: for test
-            if len(events) != 0:
-                pass
-            pass
+            symbols = self.__find_symbols(input)
+            events = self.__find_events(input)
+            reports = self.__find_reports(input)
             result = []
             for item in symbols:
                 result.append(item)
@@ -188,7 +191,7 @@ class TextAnalyser:
             for item in reports:
                 result.append(item)
             print(result)
-            print("=" * 100)
+
 
 
 if __name__ == '__main__':
