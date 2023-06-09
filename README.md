@@ -1,5 +1,3 @@
-# lexicon-based-sentiment-analysis-for-Iran-financial-market
-
 # Lexicon-based Sentiment Analysis for Iran Financial Market
 
 This repository contains code for performing lexicon-based sentiment analysis on text data related to the Iran financial market. The code is written in Python and uses regular expressions for pattern matching.
